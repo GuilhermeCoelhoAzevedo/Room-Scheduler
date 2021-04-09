@@ -1,5 +1,6 @@
 from application import app, client
 from flask import Flask, render_template, request, session, url_for, redirect, flash, json, jsonify
+from application.forms import roomForm
 
 from google.cloud import datastore
 import google.oauth2.id_token
@@ -65,3 +66,32 @@ def logout():
     session.pop('email', None)
 
     return redirect(url_for('login'))
+
+@app.route("/room", methods=['GET', 'POST'])
+def room():
+    #CHECK IF USER IS LOGGED IN
+    if not session.get('email'):
+        return redirect(url_for("login"))
+    
+    form = roomForm()
+
+    #INSERT ROOM IN THE DATABASE
+    if form.validate_on_submit():
+        id      = int(form.room_number.data)
+        name    = form.name.data.strip()
+        user    = client.key("User", session.get('id'))
+        
+        room    = datastore.Entity(key = client.key('Room', id))
+
+        room.update({
+            'name' : name,
+            'User' : user
+        }) 
+
+        client.put(room)
+
+        flash(f"{str(id)} - {name}, was successfully included!", "success")
+        
+        return redirect(url_for('index'))
+
+    return render_template('room.html', room=True, form=form)

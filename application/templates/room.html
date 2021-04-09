@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+    <form name="room" action="" method="post" novalidate>
+        <fieldset class="form-group">
+            <legend>New Room</legend>
+            {{ form.hidden_tag() }}
+
+            <div class="field-div">
+                <p>
+                    {{ form.room_number.label }}</br>
+                    {{ form.room_number(maxlength="4", onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57") }}
+                    {% for error in form.room_number.errors %}
+                    <span class="error-message">{{ error }}</span> 
+                    {% endfor %}
+                </p>
+            </div>
+            
+            <div class="field-div">
+                <p>
+                    {{ form.name.label }}</br>
+                    {{ form.name(maxlength="20") }}
+                    {% for error in form.name.errors %}
+                    <span class="error-message">{{ error }}</span> 
+                    {% endfor %}
+                </p>
+            </div>
+            
+            <p>
+                {{ form.submit() }}
+            </p>
+        </fieldset>
+    </form>
+</div>
+{% endblock %}

@@ -7,6 +7,7 @@
         {% if session['email'] %}        
         <ul class="nav navbar-nav">
             <li class="{% if index %}active{% endif %}"><a href="{{ url_for('index') }}">Home</a></li>
+            <li class="{% if room %}active{% endif %}"><a href="{{ url_for('room') }}">Add room</a></li>
         </ul>                            
 
         <ul class="nav navbar-nav navbar-right">
