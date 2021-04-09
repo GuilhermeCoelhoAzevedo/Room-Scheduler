@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+ 
+{% block content %}
+<div>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Room</th>
+                <th scope="col">Room name</th>
+                <th scope="col">Dt. start</th>
+                <th scope="col">Dt. finish</th>
+                <th scope="col">Booking Owner</th>
+            </tr>
+        </thead>
+        
+        <tbody id="booking_tbody">
+        {% for data in bookingData %}
+        <tr>
+            <td>{{ data['Room'].key.id }}</td>
+            <td>{{ data['Room']['name'] }}</td>
+            <td>{{ data.dt_start }}</td>
+            <td>{{ data.dt_finish }}</td>
+            <td>{{ data['User']['email'] }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

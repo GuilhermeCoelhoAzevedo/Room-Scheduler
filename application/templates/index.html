@@ -15,6 +15,9 @@
         <tr>
             <td>{{ data.key.id }}</td>
             <td>{{ data.name }}</td>
+            <td align="right">
+                <a class="btn btn-dark" href="{{ url_for('newBooking', roomNumber=data.key.id) }}">Book now</a>
+            </td>
         </tr>
         {% endfor %}
         </tbody>

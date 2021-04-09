@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+    <form name="booking" action="" method="post" novalidate>
+        <fieldset class="form-group">
+            <legend>{{ title }}</legend>
+            {{ form.hidden_tag() }}
+
+            <div class="booking-flex-div">
+                <div class="booking-field-div">
+                    <p>
+                        {{ form.dt_start.label }}</br>
+                        {{ form.dt_start(max="2999-12-31") }}
+                        {% for error in form.dt_start.errors %}
+                        <span class="error-message">{{ error }}</span> 
+                        {% endfor %}
+                    </p>
+                </div>
+
+                <div class="booking-field-div">
+                    <p>
+                        {{ form.hr_start.label }}</br>
+                        {{ form.hr_start }}
+                        {% for error in form.hr_start.errors %}
+                        <span class="error-message">{{ error }}</span> 
+                        {% endfor %}
+                    </p>
+                </div>
+            </div>
+
+            <div class="booking-flex-div">
+                <div class="booking-field-div">
+                    <p>
+                        {{ form.dt_finish.label }}</br>
+                        {{ form.dt_finish(max="2999-12-31") }}
+                        {% for error in form.dt_finish.errors %}
+                        <span class="error-message">{{ error }}</span> 
+                        {% endfor %}
+                    </p>
+                </div>
+
+                <div class="booking-field-div">
+                    <p>
+                        {{ form.hr_finish.label }}</br>
+                        {{ form.hr_finish }}
+                        {% for error in form.hr_finish.errors %}
+                        <span class="error-message">{{ error }}</span> 
+                        {% endfor %}
+                    </p>
+                </div>
+            </div>
+
+            <p>
+                {{ form.submit() }}
+            </p>
+        </fieldset>
+    </form>
+</div>
+{% endblock %}
