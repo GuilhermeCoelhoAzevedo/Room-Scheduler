@@ -206,3 +206,22 @@ def newBooking(roomNumber):
         return redirect(url_for('bookings'))
 
     return render_template('booking.html', form=form, title=title)
+
+@app.route("/deleteBooking/<id>", methods=['GET', 'POST'])
+def deleteBooking(id):
+    #CHECK IF USER IS LOGGED IN
+    if not session.get('email'):
+        return redirect(url_for("login"))
+
+    entity_key  = client.key("Booking", int(id))
+    booking     = client.get(entity_key)
+    user        = client.get(booking['User'])
+
+    if user.key.id == session['id']:
+        client.delete(entity_key)
+        flash("Booking was successfully deleted!", "success")
+    else:
+        flash("Booking doesn't belong to the logged user!", "danger")
+    
+
+    return redirect(url_for("bookings"))

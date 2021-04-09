@@ -47,6 +47,10 @@
             <td>{{ data.dt_start }}</td>
             <td>{{ data.dt_finish }}</td>
             <td>{{ data['User']['email'] }}</td>
+            <td align="right">
+                <a class="btn btn-dark" href="">Edit Booking</a>
+                <a class="btn btn-danger" href="{{ url_for('deleteBooking', id=data.key.id) }}">Delete Booking</a>
+            </td>
         </tr>
         {% endfor %}
         </tbody>
