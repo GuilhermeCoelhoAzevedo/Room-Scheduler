@@ -48,8 +48,10 @@
             <td>{{ data.dt_finish }}</td>
             <td>{{ data['User']['email'] }}</td>
             <td align="right">
+            {% if data['User'].key.id == session['id'] %}
                 <a class="btn btn-dark" href="{{ url_for('editBooking', id=data.key.id) }}">Edit Booking</a>
                 <a class="btn btn-danger" href="{{ url_for('deleteBooking', id=data.key.id) }}">Delete Booking</a>
+            {% endif %}
             </td>
         </tr>
         {% endfor %}

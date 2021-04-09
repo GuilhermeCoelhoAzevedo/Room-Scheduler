@@ -112,24 +112,25 @@ function searchBooking(){
                 cell = document.createElement("td");
                 cell.setAttribute("align", "right");
                 
-                //Edit booking button
-                var url_button = 'editBooking/' + item[4];
-                var createLink = document.createElement("a");
-                createLinkTextEdit = document.createTextNode("Edit Booking");
-                createLink.setAttribute('class', 'btn btn-dark');
-                createLink.setAttribute('href', url_button);
-                createLink.appendChild(createLinkTextEdit);
-                cell.appendChild(createLink);
+                if(item[6]){
+                    //Edit booking button
+                    var url_button = 'editBooking/' + item[4];
+                    var createLink = document.createElement("a");
+                    createLinkTextEdit = document.createTextNode("Edit Booking");
+                    createLink.setAttribute('class', 'btn btn-dark');
+                    createLink.setAttribute('href', url_button);
+                    createLink.appendChild(createLinkTextEdit);
+                    cell.appendChild(createLink);
 
-                //Delete booking button
-                url_button = 'deleteBooking/' + item[4];
-                createLink = document.createElement("a");
-                createLinkTextEdit = document.createTextNode("Delete Booking");
-                createLink.setAttribute('class', 'btn btn-danger');
-                createLink.setAttribute('href', url_button);
-                createLink.appendChild(createLinkTextEdit);
-                cell.appendChild(createLink);
-
+                    //Delete booking button
+                    url_button = 'deleteBooking/' + item[4];
+                    createLink = document.createElement("a");
+                    createLinkTextEdit = document.createTextNode("Delete Booking");
+                    createLink.setAttribute('class', 'btn btn-danger');
+                    createLink.setAttribute('href', url_button);
+                    createLink.appendChild(createLinkTextEdit);
+                    cell.appendChild(createLink);
+                }
                 row.appendChild(cell);
                 tblBody.appendChild(row);
             });
