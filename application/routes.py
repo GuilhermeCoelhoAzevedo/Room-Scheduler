@@ -225,3 +225,81 @@ def deleteBooking(id):
     
 
     return redirect(url_for("bookings"))
+    
+@app.route("/editBooking/<id>", methods=['GET', 'POST'])
+def editBooking(id):
+    #CHECK IF USER IS LOGGED IN
+    if not session.get('email'):
+        return redirect(url_for("login"))
+
+    entity_key  = client.key("Booking", int(id))
+    booking     = client.get(entity_key)
+    room        = client.get(booking['Room'])
+    user        = client.get(booking['User'])
+
+    if not booking:
+        return redirect(url_for("index"))
+    
+    if not user.key.id == session['id']:
+        flash("Booking doesn't belong to the logged user!", "danger")
+        return redirect(url_for("bookings"))
+
+    title                   = "Edit Booking - Room: " + str(room.key.id)
+    form                    = bookingForm()
+    form.room_number.data   = room.key.id
+    form.id_hidden.data     = booking.key.id
+
+    if request.method == 'GET':
+        form.dt_start.data      = booking['dt_start']
+        form.hr_start.data      = booking['dt_start']
+        form.dt_finish.data     = booking['dt_finish']
+        form.hr_finish.data     = booking['dt_finish']
+
+    #EDIT BOOKING IN THE DATABASE
+    if form.validate_on_submit():
+        dt_start    = form.dt_start.data
+        dt_finish   = form.dt_finish.data
+        hr_start    = form.hr_start.data
+        hr_finish   = form.hr_finish.data
+        
+        booking.update({
+            'dt_start' : datetime.combine(dt_start, hr_start),
+            'dt_finish' : datetime.combine(dt_finish, hr_finish),
+        })
+
+        client.put(booking)
+
+        flash(f"Booking was successfully edited!", "success")
+
+        return redirect(url_for('bookings'))
+
+    return render_template('booking.html', form=form, title=title)
+    
+@app.route("/deleteRoom/<id>", methods=['GET', 'POST'])
+def deleteRoom(id):
+    #CHECK IF USER IS LOGGED IN
+    if not session.get('email'):
+        return redirect(url_for("login"))
+
+    entity_key  = client.key("Room", int(id))
+    room        = client.get(entity_key)
+
+    if not room:
+        flash("Room doesn't exist!", "danger")
+        return redirect(url_for("index"))
+    
+    query = client.query(kind="Booking")
+    query.add_filter("Room", "=", entity_key)
+    bookings = list(query.fetch())
+
+    #CHECKING IF THERE IS A BOOKING IN THE ROOM
+    if bookings:
+        flash(f"Room {str(room.key.id)} - {room['name']} can't be deleted. There are still bookings in the room!", "danger")
+        return redirect(url_for("index"))
+    
+    client.delete(room.key)
+
+    flash(f"{str(room.key.id)} - {room['name']}  was successfully deleted!", "success")
+
+    return redirect(url_for("index"))
+    
