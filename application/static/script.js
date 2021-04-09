@@ -41,3 +41,82 @@ firebase.auth().onAuthStateChanged(function(user) {
         alert('Unable to log in: ' + error);
     }
 );
+
+/***********************************************************************************/
+/********************************Booking functions**********************************/
+/***********************************************************************************/
+function searchBooking(){
+    var room_number     = document.getElementById('room_number').value;
+    var dt_start        = document.getElementById('dt_start').value;
+    var dt_finish       = document.getElementById('dt_finish').value;
+    var user_bookings   = document.getElementById('userBookings').checked;
+
+    var filters = {
+        room_number: room_number,
+        dt_start: dt_start,
+        dt_finish: dt_finish,
+        user_bookings: user_bookings
+    };
+
+    const post_filters = JSON.stringify(filters);
+
+    $.ajax({
+        url: '/bookings',
+        type: 'POST',
+        data: post_filters,
+        dataType: 'json',
+        contentType: 'application/json',
+        success: function (result, status, request) {
+
+            var tblBody = document.createElement("tbody");
+            tblBody.setAttribute("id", "booking_tbody");
+
+            $.each(result, function(i, item) {
+                //Room
+                var row = document.createElement("tr");
+                var cell = document.createElement("td");            
+                var createLinkTextEdit = document.createTextNode(item[0]);
+                cell.appendChild(createLinkTextEdit);
+
+                row.appendChild(cell);
+
+                //Name
+                cell = document.createElement("td");
+                createLinkTextEdit = document.createTextNode(item[1]);
+                cell.appendChild(createLinkTextEdit);
+
+                row.appendChild(cell);
+                
+                //Dt. start
+                cell = document.createElement("td");
+                createLinkTextEdit = document.createTextNode(item[2]);
+                cell.appendChild(createLinkTextEdit);
+
+                row.appendChild(cell);
+                
+                //Dt. finish
+                cell = document.createElement("td");
+                createLinkTextEdit = document.createTextNode(item[3]);
+                cell.appendChild(createLinkTextEdit);
+
+                row.appendChild(cell);
+
+                //Booking Owner
+                cell = document.createElement("td");
+                createLinkTextEdit = document.createTextNode(item[5]);
+                cell.appendChild(createLinkTextEdit);
+
+                row.appendChild(cell);
+
+                tblBody.appendChild(row);
+            });
+
+            document.getElementById('booking_tbody').replaceWith(tblBody);
+        },
+        
+        error: function (event, jqxhr, settings, thrownError) {
+            alert('Error to filter data. Please try again!');
+        }
+    });
+};
+

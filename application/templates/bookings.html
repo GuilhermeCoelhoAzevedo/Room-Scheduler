@@ -1,6 +1,32 @@
 {% extends "layout.html" %}
  
 {% block content %}
+<div class="search-div">
+    <p>
+        <label for="room_number">Room</label>
+        <input 
+            id="room_number" 
+            name="room_number" 
+            required type="text"
+            maxlength="4" 
+            size="4"
+            onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57"
+        >
+
+        <label for="dt_start">Dt. Start</label>
+        <input id="dt_start" name="dt_start" required type="date" value="" max="2999-12-31">
+
+        <label for="dt_finish">Dt. Finish</label>
+        <input id="dt_finish" name="dt_finish" required type="date" value="" max="2999-12-31">
+
+        <a class="btn btn-dark" id="search-booking" onclick="searchBooking()">Search</a>
+
+        <p>
+            <input id="userBookings" name="userBookings" type="checkbox">
+            <label for="userBookings">Show just my bookigs</label>
+        </p>
+    </p>
+</div>
 <div>
     <table class="table table-hover">
         <thead>
