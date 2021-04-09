@@ -16,8 +16,7 @@ class roomForm(FlaskForm):
         entity_key  = client.key("Room", int(room_number.data))
         room = client.get(entity_key)
 
-        #VALIDATION CHECKING IF THE GPU NAME IS BEING REPEATED
-        #VALIDATION CREATED FOR ADD/EDIT GPU
+        #VALIDATION CHECKING IF THE ROOM NUMBER IS BEING REPEATED
         if room:
             raise ValidationError("Room already exists in the system!")
 
