@@ -1,0 +1,32 @@
+indexes:
+- kind: Booking
+  properties:
+  - name: User
+  - name: dt_start
+    direction: desc
+  - name: dt_finish
+    direction: desc
+
+- kind: Booking
+  properties:
+  - name: dt_start
+    direction: desc
+  - name: dt_finish
+    direction: desc
+    
+- kind: Booking
+  properties:
+  - name: Room
+  - name: dt_start
+    direction: desc
+  - name: dt_finish
+    direction: desc
+
+- kind: Booking
+  properties:
+  - name: User
+  - name: Room
+  - name: dt_start
+    direction: desc
+  - name: dt_finish
+    direction: desc

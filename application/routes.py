@@ -111,6 +111,7 @@ def bookings():
 
             booking_list    = []
             query           = client.query(kind='Booking')
+            query.order     = ["-dt_start", "-dt_finish"]
             utc             = pytz.UTC
 
             #FILTERING ROOM
@@ -155,6 +156,7 @@ def bookings():
             return results
 
     query       = client.query(kind='Booking')
+    query.order = ["-dt_start", "-dt_finish"]
     bookingData = list(query.fetch())
     
     for element in bookingData:
@@ -180,7 +182,7 @@ def newBooking(roomNumber):
     form                    = bookingForm()
     form.room_number.data   = room.key.id
     form.id_hidden.data     = "0"
-    title                   = "New booking: Room " + str(room.key.id)
+    title                   = "New booking: Room " + str(room.key.id) + ' - ' + room['name']
 
     #INSERT ROOM IN THE DATABASE
     if form.validate_on_submit():
@@ -244,7 +246,7 @@ def editBooking(id):
         flash("Booking doesn't belong to the logged user!", "danger")
         return redirect(url_for("bookings"))
 
-    title                   = "Edit Booking - Room: " + str(room.key.id)
+    title                   = "Edit Booking - Room: " + str(room.key.id) + ' - ' + room['name']
     form                    = bookingForm()
     form.room_number.data   = room.key.id
     form.id_hidden.data     = booking.key.id

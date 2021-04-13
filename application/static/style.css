@@ -12,14 +12,16 @@
 }
 
 .btn {
-    display: inline-block;
-    width: 125px;
     box-sizing: border-box;
     padding: 7px 10px;
     font-style: normal;
     font-weight: bold;
     font-size: 14px;
     margin-left: 10px;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center
 }
 
 .btn-dark,
@@ -28,6 +30,7 @@
     background-color: var(--gray);
     border-color: var(--gray);
 }
+
 .btn-dark:focus,
 .btn-dark:hover {
     color: white;
@@ -39,11 +42,52 @@ th{
     font-size: 18px;
 }
 
-.booking-flex-div{
+#sign-out{
     display: flex;
-    justify-content: flex-start;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
 }
 
+svg {
+    margin-right: 5px;
+}
+
+input{
+    font-size: 18px;
+}
+
+/******************************************************************************/
+/***************************** BOOKING RULES **********************************/
+/******************************************************************************/
+.filter-flex-div{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 5px;
+}
+
+.filter-flex-div > label {
+    margin-right: 10px;
+}
+
+.filter-flex-div > input {
+    margin-right: 20px;
+}
+
+.container-flex{
+    display: flex;
+    justify-content: flex-end;
+}
+
+#userBookings{
+    margin-top: 10px;
+    margin-bottom: 20px;
+    margin-left: 5px;
+}
+/******************************************************************************/
+/***************************** FORM RULES *************************************/
+/******************************************************************************/
 .form-group input[type=text],
 .form-group input[type=date],
 .form-group input[type=time] {
@@ -54,6 +98,10 @@ th{
     outline: 0;
     border: 0;
     border-bottom: 2px solid var(--gray);
+}
+
+input[type=number]{
+    width: 80px;
 }
 
 .form-group input[type=text]:focus, 
@@ -98,26 +146,13 @@ th{
     margin-bottom: 20px;
 }
 
+.booking-flex-div{
+    display: flex;
+    justify-content: flex-start;
+}
+
 .error-message {
     color: red;
     font-weight: bold;
-}
-
-input{
-    font-size: 18px;
-    margin-right: 20px;
-}
-
-input[type=number]{
-    width: 80px;
-}
-
-#search-booking{
-    float:none;
-}
-
-.search-div{
-    margin-bottom: 20px;
-    padding:5px;
 }
 
