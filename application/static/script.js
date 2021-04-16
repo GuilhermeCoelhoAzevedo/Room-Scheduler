@@ -15,6 +15,10 @@ if(document.getElementById('sign-out')) {
     };
 };
 
+firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION).then(() => {
+    initializeAuth();
+});
+
 var uiConfig = {
     signInSuccessUrl: '/login',
     signInOptions: [
@@ -23,25 +27,26 @@ var uiConfig = {
     ]
 };
 
-firebase.auth().onAuthStateChanged(function(user) {
-    if(user) {
-        //CREATE COOKIE WITH THE USER DATA
-        user.getIdToken().then(function(token) {
-            document.cookie = "token=" + token + ";domain=;path=/";
-        });
-    } else {
-        //CREATE LOGIN CONTAINER
-        if(document.getElementById('firebase-auth-container')) {
-            var ui = new firebaseui.auth.AuthUI(firebase.auth());
-            ui.start('#firebase-auth-container', uiConfig);
+function initializeAuth(){
+    firebase.auth().onAuthStateChanged(function(user) {
+        if(user) {
+            //CREATE COOKIE WITH THE USER DATA
+            user.getIdToken().then(function(token) {
+                document.cookie = "token=" + token + ";domain=;path=/";
+            });
+        } else {
+            //CREATE LOGIN CONTAINER
+            if(document.getElementById('firebase-auth-container')) {
+                var ui = new firebaseui.auth.AuthUI(firebase.auth());
+                ui.start('#firebase-auth-container', uiConfig);
+            }
+            document.cookie = "token=" + ";domain=;path=/";
         }
-        document.cookie = "token=" + ";domain=;path=/";
-    }
-    }, function(error) {
-        alert('Unable to log in: ' + error);
-    }
-);
-
+        }, function(error) {
+            alert('Unable to log in: ' + error);
+        }
+    );
+};
 /***********************************************************************************/
 /********************************Booking functions**********************************/
 /***********************************************************************************/

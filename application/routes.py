@@ -10,6 +10,7 @@ from google.auth.transport import requests
 
 firebase_request_adapter = requests.Request()
 
+@app.route("/")
 @app.route("/index")
 def index():
     #CHECK IF USER IS LOGGED IN
@@ -21,12 +22,13 @@ def index():
 
     return render_template('index.html', index=True, roomData=room)
 
-@app.route("/")
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     id_token = request.cookies.get("token")
     error_message = None
     claims = None
+    session.pop('id', None)
+    session.pop('email', None)
 
     if id_token:
         try:
