@@ -42,6 +42,7 @@ def login():
             userData = list(query.fetch())
 
             if not userData:
+                #CREATE USER ENTITY
                 user = datastore.Entity(key = client.key('User'))
         
                 user.update({
@@ -157,6 +158,7 @@ def bookings():
 
             return results
 
+    #GETTING BOOKING DATA
     query       = client.query(kind='Booking')
     query.order = ["-dt_start", "-dt_finish"]
     bookingData = list(query.fetch())
@@ -211,16 +213,19 @@ def newBooking(roomNumber):
 
     return render_template('booking.html', form=form, title=title)
 
-@app.route("/deleteBooking/<id>", methods=['GET', 'POST'])
-def deleteBooking(id):
+@app.route("/deleteBooking", methods=['POST'])
+def deleteBooking():
     #CHECK IF USER IS LOGGED IN
     if not session.get('email'):
         return redirect(url_for("login"))
+
+    id = request.form['id']
 
     entity_key  = client.key("Booking", int(id))
     booking     = client.get(entity_key)
     user        = client.get(booking['User'])
 
+    #CHECK IF THE BOOKING BELONGS TO THE LOGGED USER
     if user.key.id == session['id']:
         client.delete(entity_key)
         flash("Booking was successfully deleted!", "success")
@@ -244,6 +249,7 @@ def editBooking(id):
     if not booking:
         return redirect(url_for("index"))
     
+    #CHECK IF THE BOOKING BELONGS TO THE LOGGED USER
     if not user.key.id == session['id']:
         flash("Booking doesn't belong to the logged user!", "danger")
         return redirect(url_for("bookings"))
@@ -279,12 +285,13 @@ def editBooking(id):
 
     return render_template('booking.html', form=form, title=title)
     
-@app.route("/deleteRoom/<id>", methods=['GET', 'POST'])
-def deleteRoom(id):
+@app.route("/deleteRoom", methods=['POST'])
+def deleteRoom():
     #CHECK IF USER IS LOGGED IN
     if not session.get('email'):
         return redirect(url_for("login"))
 
+    id = request.form['id']
     entity_key  = client.key("Room", int(id))
     room        = client.get(entity_key)
 

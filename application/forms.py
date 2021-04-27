@@ -12,11 +12,11 @@ class roomForm(FlaskForm):
     name        = StringField("Name", validators=[DataRequired(), Length(max=20)])
     submit      = SubmitField("Create room")
 
+    #VALIDATION CHECKING IF THE ROOM NUMBER IS BEING REPEATED
     def validate_room_number(self, room_number):
         entity_key  = client.key("Room", int(room_number.data))
         room = client.get(entity_key)
 
-        #VALIDATION CHECKING IF THE ROOM NUMBER IS BEING REPEATED
         if room:
             raise ValidationError("Room already exists in the system!")
 
@@ -32,6 +32,7 @@ class bookingForm(FlaskForm):
     def validate(self):
         result = True
 
+        #VALIDATING REQUIRED FIELDS
         if not self.dt_start.data:
             errors = list(self.dt_start.errors)
             errors.append("This field is required.")
@@ -71,31 +72,20 @@ class bookingForm(FlaskForm):
         dt_start    = datetime.combine(self.dt_start.data, self.hr_start.data)
         dt_finish   = datetime.combine(self.dt_finish.data, self.hr_finish.data)
 
+        #VALIDATING DATES
         if dt_start < now:
-            errors = list(self.dt_start.errors)
-            errors.append("Start date in the past is not valid!")
-            errors = tuple(errors)
-            self.dt_start.errors = errors
-
+            flash("Start date in the past is not valid!", "danger")
             result = False
 
         if dt_finish < now:
-            errors = list(self.dt_finish.errors)
-            errors.append("Finish date in the past is not valid!")
-            errors = tuple(errors)
-            self.dt_finish.errors = errors
-
+            flash("Finish date in the past is not valid!", "danger")
             result = False
 
         if not result:
             return result
 
         if dt_finish <= dt_start:
-            errors = list(self.dt_finish.errors)
-            errors.append("Finish date must be greather than start date!")
-            errors = tuple(errors)
-            self.dt_finish.errors = errors
-            
+            flash("Finish date must be greather than start date!", "danger")
             return False
 
         entity_key  = client.key("Room", int(self.room_number.data))
