@@ -161,6 +161,11 @@ def bookings():
     #GETTING BOOKING DATA
     query       = client.query(kind='Booking')
     query.order = ["-dt_start", "-dt_finish"]
+    
+    #BRING JUST USER BOOKINGS
+    entity_key  = client.key("User", int(session['id']))
+    query.add_filter("User", "=", entity_key)
+    
     bookingData = list(query.fetch())
     
     for element in bookingData:

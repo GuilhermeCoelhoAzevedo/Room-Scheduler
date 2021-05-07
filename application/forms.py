@@ -109,6 +109,12 @@ class bookingForm(FlaskForm):
             if dt_start.replace(tzinfo=utc) <= booking['dt_finish'] <= dt_finish.replace(tzinfo=utc):
                 current_booked = True
 
+            if booking['dt_start']  <= dt_start.replace(tzinfo=utc)  <= booking['dt_finish']:
+                current_booked = True
+
+            if booking['dt_start']  <= dt_finish.replace(tzinfo=utc)  <= booking['dt_finish']:
+                current_booked = True
+                
         if current_booked:
             flash("This room is already booked for the chosen dates!", "danger")
 
