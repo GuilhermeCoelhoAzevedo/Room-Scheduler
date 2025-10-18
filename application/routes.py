@@ -12,10 +12,6 @@ from google.cloud import datastore
 @app.route("/")
 @app.route("/index")
 def index():
-    #CHECK IF USER IS LOGGED IN
-    if not session.get('email'):
-        return redirect(url_for("login"))
-
     query   = client.query(kind='Room')
     room    = query.fetch()
 
@@ -24,7 +20,7 @@ def index():
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     redirect_uri = url_for('authorize', _external=True)
-    return google.authorize_redirect(redirect_uri)
+    return google.authorize_redirect(redirect_uri, prompt="select_account")
 
 @app.route("/authorize")
 def authorize():
@@ -56,18 +52,17 @@ def authorize():
 
 @app.route("/logout")
 def logout():
-    session.clear()  # Clear all session data
-
-    # Redirect to Google logout
-    google_logout = 'https://accounts.google.com/Logout'
-    return redirect(google_logout)
+    session.clear()  # clear app session only
+    flash("You have been logged out successfully.", "info")
+    return redirect(url_for("index"))  # back to index, not login
 
 @app.route("/room", methods=['GET', 'POST'])
 def room():
     #CHECK IF USER IS LOGGED IN
     if not session.get('email'):
-        return redirect(url_for("login"))
-    
+        flash("You must be logged in to create a room!", "danger")
+        return redirect(url_for("index"))
+
     form = roomForm()
 
     #INSERT ROOM IN THE DATABASE
@@ -95,7 +90,8 @@ def room():
 def bookings():
     #CHECK IF USER IS LOGGED IN
     if not session.get('email'):
-        return redirect(url_for("login"))
+        flash("You must be logged in to check your bookings!", "danger")
+        return redirect(url_for("index"))
 
     #AJAX FOR BOOKINGS FILTERS
     if request.method == 'POST':
@@ -170,7 +166,8 @@ def bookings():
 def newBooking(roomNumber):
     #CHECK IF USER IS LOGGED IN
     if not session.get('email'):
-        return redirect(url_for("login"))
+        flash("You must be logged in to create a booking!", "danger")
+        return redirect(url_for("index"))
 
     entity_key  = client.key("Room", int(roomNumber))
     room        = client.get(entity_key)
@@ -212,7 +209,8 @@ def newBooking(roomNumber):
 def deleteBooking():
     #CHECK IF USER IS LOGGED IN
     if not session.get('email'):
-        return redirect(url_for("login"))
+        flash("You must be logged in to delete a booking!", "danger")
+        return redirect(url_for("index"))
 
     id = request.form['id']
 
@@ -234,7 +232,8 @@ def deleteBooking():
 def editBooking(id):
     #CHECK IF USER IS LOGGED IN
     if not session.get('email'):
-        return redirect(url_for("login"))
+        flash("You must be logged in to edit a booking!", "danger")
+        return redirect(url_for("index"))
 
     entity_key  = client.key("Booking", int(id))
     booking     = client.get(entity_key)
@@ -284,7 +283,8 @@ def editBooking(id):
 def deleteRoom():
     #CHECK IF USER IS LOGGED IN
     if not session.get('email'):
-        return redirect(url_for("login"))
+        flash("You must be logged in to delete a room!", "danger")
+        return redirect(url_for("index"))
 
     id = request.form['id']
     entity_key  = client.key("Room", int(id))
