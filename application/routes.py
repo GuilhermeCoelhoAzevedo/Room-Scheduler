@@ -1,14 +1,13 @@
-from application import app, client
+import os
+
+from application import app, client, google
 from flask import Flask, render_template, request, session, url_for, redirect, flash, json, jsonify
 from application.forms import roomForm, bookingForm
 from datetime import datetime
 import pytz
 
+from authlib.integrations.flask_client import OAuth
 from google.cloud import datastore
-import google.oauth2.id_token
-from google.auth.transport import requests
-
-firebase_request_adapter = requests.Request()
 
 @app.route("/")
 @app.route("/index")
@@ -24,53 +23,44 @@ def index():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
-    id_token = request.cookies.get("token")
-    error_message = None
-    claims = None
-    session.pop('id', None)
-    session.pop('email', None)
+    redirect_uri = url_for('authorize', _external=True)
+    return google.authorize_redirect(redirect_uri)
 
-    if id_token:
-        try:
-            claims = google.oauth2.id_token.verify_firebase_token(id_token, firebase_request_adapter)
-            
-            #CONTROL USER SESSION
-            session['email']    = claims['email']
+@app.route("/authorize")
+def authorize():
+    token = google.authorize_access_token()
 
-            query = client.query(kind='User')
-            query.add_filter("email", "=", session['email'])
-            userData = list(query.fetch())
+    # Pass the nonce stored in the session to verify the ID token
+    user_info = google.parse_id_token(token, nonce=session.get('nonce'))
 
-            if not userData:
-                #CREATE USER ENTITY
-                user = datastore.Entity(key = client.key('User'))
-        
-                user.update({
-                    'email' : session['email']
-                })
+    # STORE USER SESSION
+    session['email'] = user_info['email']
 
-                client.put(user)
-                session['id'] = user.key.id
-            else:
-                for user in userData:
-                    session['id'] = user.key.id
+    # CHECK IF USER EXISTS
+    query = client.query(kind='User')
+    query.add_filter("email", "=", session['email'])
+    userData = list(query.fetch())
 
-            flash(f"{claims['email']}, you are successfully logged in!", "success")
+    if not userData:
+        # CREATE USER ENTITY
+        user = datastore.Entity(key=client.key('User'))
+        user.update({'email': session['email']})
+        client.put(user)
+        session['id'] = user.key.id
+    else:
+        for user in userData:
+            session['id'] = user.key.id
 
-            return redirect(url_for("index"))
-
-        except ValueError as exc:
-            error_message = str(exc)
-            flash("Sorry, something went wrong!", "danger")
-
-    return render_template('login.html', login=True)
+    flash(f"{session['email']}, you are successfully logged in!", "success")
+    return redirect(url_for("index"))
 
 @app.route("/logout")
 def logout():
-    session.pop('id', None)
-    session.pop('email', None)
+    session.clear()  # Clear all session data
 
-    return redirect(url_for('login'))
+    # Redirect to Google logout
+    google_logout = 'https://accounts.google.com/Logout'
+    return redirect(google_logout)
 
 @app.route("/room", methods=['GET', 'POST'])
 def room():

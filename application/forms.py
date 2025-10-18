@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, BooleanField, IntegerField
-from wtforms.fields.html5 import DateField, TimeField
+from wtforms_components import DateField, TimeField
 from wtforms.validators import DataRequired, ValidationError, Length
 from datetime import datetime
 import pytz
